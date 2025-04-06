@@ -1,0 +1,31 @@
+name: Build LaTeX Resume
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+
+      - name: Compile LaTeX to PDF
+        run: |
+          pdflatex resume.tex
+          # Run twice to resolve cross-references, if necessary
+          pdflatex resume.tex
+
+      - name: Upload PDF as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Resume-PDF
+          path: resume.pdf 
